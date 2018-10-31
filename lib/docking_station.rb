@@ -1,13 +1,19 @@
 require './lib/bike'
 
 class DockingStation
-  attr_reader :bike
+  def initialize
+    @bikes = []
+  end
+  attr_reader :bikes
 
-  def release_bike
-    raise 'No bikes available' unless @bike
+  def dock_bike(bike)
+    raise 'Docking station full' if @bikes.count >= 20
+    @bikes << bike
   end
 
-  def docking_bike
+  def release_bike
+    raise 'No bikes available' if @bikes.empty?
+    @bikes.pop
   end
 
 end

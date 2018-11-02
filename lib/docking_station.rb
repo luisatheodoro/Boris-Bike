@@ -16,8 +16,12 @@ class DockingStation
 
   def release_bike
     raise 'No bikes available' if empty?
-    raise 'Bike is broken' if :broken?
-    @bikes.pop
+    raise 'Bike is broken' if !find_working_bike
+    @bikes.delete(find_working_bike)
+  end
+
+  def release_broken_bike_to_van
+    @bikes.delete(find_broken_bike)
   end
 
   private
@@ -28,6 +32,14 @@ class DockingStation
 
   def empty?
     @bikes.empty?
+  end
+
+  def find_working_bike
+    @bikes.detect {|bike| bike.working? == true}
+  end
+
+  def find_broken_bike
+    @bikes.detect {|bike| bike.broken? == true}
   end
 
 end

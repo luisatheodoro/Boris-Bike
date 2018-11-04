@@ -6,12 +6,6 @@ describe DockingStation do
   it { is_expected.to respond_to(:dock_bike).with(1).argument }
   it { is_expected.to respond_to(:bikes) }
 
-  it 'Releases a working bike' do
-    subject.dock_bike(double(:bike, working?: true))
-    bike = subject.release_bike
-    expect(bike).to be_working
-  end
-
   it 'makes sure user can set a bike capacity' do
     subject = DockingStation.new(30)
     expect(subject.capacity).to eq 30
@@ -27,6 +21,13 @@ describe DockingStation do
       subject.dock_bike(bike)
       expect { subject.release_bike }.to raise_error 'Bike is broken'
     end
+
+    it 'Releases a working bike' do
+      subject.dock_bike(double(:bike, working?: true))
+      bike = subject.release_bike
+      expect(bike).to be_working
+    end
+
   end
 
    describe '#dock_bike' do
@@ -41,10 +42,12 @@ describe DockingStation do
       expect { subject.dock_bike(double(:bike)) }.to raise_error 'Docking station full'
     end
 
-    # it 'accepts a bike broken or not' do
-    #   bike = Bike.new
-    #   broken_bike = bike.report_broken
-    #   expect(subject.dock_bike(broken_bike)).to eq bike
+    # it 'Van should collect all broken bikes from docking station' do
+    #   van = double(:van)
+    #   station = DockingStation.new
+    #   broken_bike_1 = station.dock_bike(double(:bike, broken?: true))
+    #   # broken_bikes_2 = station.dock_bike(double(:bike, broken?: true))
+    #   expect(van.bikes_in_van).to include(broken_bikes)
     # end
  end
 end

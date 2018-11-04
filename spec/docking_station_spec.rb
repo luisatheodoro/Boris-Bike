@@ -1,5 +1,6 @@
 require "docking_station"
 require "bike"
+require "van"
 
 describe DockingStation do
   it { is_expected.to respond_to(:release_bike) }
@@ -42,12 +43,18 @@ describe DockingStation do
       expect { subject.dock_bike(double(:bike)) }.to raise_error 'Docking station full'
     end
 
-    # it 'Van should collect all broken bikes from docking station' do
-    #   van = double(:van)
-    #   station = DockingStation.new
-    #   broken_bike_1 = station.dock_bike(double(:bike, broken?: true))
-    #   # broken_bikes_2 = station.dock_bike(double(:bike, broken?: true))
-    #   expect(van.bikes_in_van).to include(broken_bikes)
-    # end
+    it 'Docking station should release broken bikes to van' do
+      #given
+      subject.dock_bike(double(:bike, broken?: true))
+      subject.dock_bike(double(:bike, broken?: true))
+      subject.dock_bike(double(:bike, broken?: false))
+
+      #when
+      broken_bikes = subject.release_broken_bike_to_van
+
+      #then
+      expect(broken_bikes.count).to eq 2
+      expect(subject.bikes.count).to eq 1
+    end
  end
 end

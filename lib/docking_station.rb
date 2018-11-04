@@ -3,13 +3,11 @@ require './lib/van'
 
 class DockingStation
   DEFAULT_CAPACITY = 20
-  attr_reader :bikes, :capacity, :broken_bikes
+  attr_reader :bikes, :capacity
 
   def initialize(capacity=DEFAULT_CAPACITY)
     @bikes = []
     @capacity = capacity
-    @broken_bikes = []
-    @van = Van.new
   end
 
   def dock_bike(bike)
@@ -24,11 +22,13 @@ class DockingStation
   end
 
   def release_broken_bike_to_van
-    @bikes.delete(find_broken_bike)
+    @broken_bikes = find_all_broken_bikes
+    @bikes.delete_if {|bike| bike.broken? == true}
+    @broken_bikes
   end
 
   private
-  
+
   def full?
     @bikes.count >= DEFAULT_CAPACITY
   end
@@ -46,11 +46,7 @@ class DockingStation
   end
 
   def find_all_broken_bikes
-    @bikes.each do |bike|
-      if bike.broken?
-        @broken_bikes << bike
-      end
-    end
+    @bikes.find_all {|bike| bike.broken? == true}
   end
 
 end
